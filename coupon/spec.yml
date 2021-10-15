@@ -1,0 +1,332 @@
+openapi: 3.0.0
+
+info:
+  title: 'Jetpack Partner - Coupon API'
+  description: 'A set of endpoints that allows Jetpack partners to create and manage coupons.'
+  version: 0.2.0
+  contact:
+    email: partners@jetpack.com
+  license:
+    name: GPL 2.0
+    url: 'https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'
+
+tags:
+  - name: coupon
+    description: 'A set of endpoints that allows Jetpack partners to create and manage coupons.'
+  - name: presets
+    description: 'A set of endpoints that allows Jetpack partners interact with coupon presets.'
+
+servers:
+  - url: https://public-api.wordpress.com/wpcom/v2/jetpack-partner/coupon/v1
+    description: 'WordPress.com API'
+
+paths:
+  /coupon:
+    get:
+      tags:
+        - coupon
+      summary: 'Get the status of a coupon.'
+      operationId: couponStatus
+      parameters:
+        - name: coupon_code
+          description: 'Unique coupon code.'
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/CouponCode'
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: 'OK. Response body contains the coupon.'
+          headers:
+            X-Jetpack-Request-Id:
+              $ref: '#/components/headers/X-Jetpack-Request-Id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NoPartner'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    post:
+      tags:
+        - coupon
+      summary: 'Issue a new coupon.'
+      operationId: issueCoupon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                preset:
+                  description: 'A coupon preset. These can be fetched with the /presets endpoint.'
+                  type: string
+                  example: 'preset1'
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: 'OK. Response body contains the newly issued coupon.'
+          headers:
+            X-Jetpack-Request-Id:
+              $ref: '#/components/headers/X-Jetpack-Request-Id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NoPartner'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - coupon
+      summary: 'Revoke a coupon permanently.'
+      operationId: revokeCoupon
+      parameters:
+        - name: coupon_code
+          description: 'Unique coupon code.'
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/CouponCode'
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: 'OK. Response body contains the coupon that was revoked.'
+          headers:
+            X-Jetpack-Request-Id:
+              $ref: '#/components/headers/X-Jetpack-Request-Id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NoPartner'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /presets:
+    get:
+      tags:
+        - presets
+      summary: 'Get all available presets.'
+      operationId: presetsStatus
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: 'OK. Response body contains a list of presets'
+          headers:
+            X-Jetpack-Request-Id:
+              $ref: '#/components/headers/X-Jetpack-Request-Id'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'A key/value pair of presets and its corresponding settings.'
+                properties:
+                  preset1:
+                    $ref: '#/components/schemas/Preset'
+                  preset2:
+                    $ref: '#/components/schemas/Preset'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NoPartner'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+externalDocs:
+  description: 'Learn more about integrating with this API.'
+  url: https://github.com/Automattic/<TBD>
+
+components:
+  schemas:
+    Coupon:
+      type: object
+      properties:
+        coupon_code:
+          $ref: '#/components/schemas/CouponCode'
+        discount:
+          $ref: '#/components/schemas/Discount'
+        expires:
+          type: string
+          format: date-time
+        used_on:
+          type: string
+          format: date-time
+
+    CouponCode:
+      type: string
+      example: 'part_0.TG9yZW0gaXBzd'
+
+    Products:
+      type: array
+      description: 'Jetpack products the coupon can be applied for.'
+      items:
+        type: string
+        enum:
+          - 'jetpack-backup-daily'
+          - 'jetpack-backup-realtime'
+          - 'jetpack-scan'
+          - 'jetpack-anti-spam'
+          - 'jetpack-security-daily'
+          - 'jetpack-security-realtime'
+          - 'jetpack-complete'
+
+    Discount:
+      type: number
+      format: double
+      description: 'The percentage of discount the coupon offers'
+      minimum: 1
+      maximum: 100
+      example: 50
+
+    Preset:
+      type: object
+      properties:
+        products:
+          $ref: '#/components/schemas/Products'
+        discount:
+          $ref: '#/components/schemas/Discount'
+
+    ErrorMessage:
+      type: object
+      properties:
+        code:
+          type: string
+          example: 'api_message_code'
+        message:
+          type: string
+          example: 'Human-readable API message.'
+        data:
+          type: object
+          description: 'The data object will always contain a status property but might also contain additional error data.'
+          properties:
+            status:
+              type: integer
+              example: 403
+
+  headers:
+    X-Jetpack-Request-Id:
+      description: 'Unique request id.'
+      schema:
+        type: string
+      example: 'TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQu'
+
+  responses:
+    BadRequest:
+      description: 'Invalid input. The request has to be modified.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+          examples:
+            rest_forbidden:
+              value:
+                code: 'invalid_params'
+                message: 'Some of the required parameters have not been supplied or incorrectly formatted.'
+                data:
+                  status: 400
+
+    NoPartner:
+      description: 'No partner found'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: 'no_partner_found'
+              message:
+                type: string
+                example: 'No partner found'
+              data:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 401
+
+    Forbidden:
+      description: 'Insufficient permissions.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+          examples:
+            tos_consent_required:
+              value:
+                code: 'tos_consent_required'
+                message: 'You must agree to the Terms of Service before you can use the API.'
+                data:
+                  status: 403
+            rest_forbidden:
+              value:
+                code: 'rest_forbidden'
+                message: 'Sorry, you are not allowed to do that.'
+                data:
+                  status: 403
+
+    NotFound:
+      description: 'Resource not found.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+          examples:
+            coupon_do_not_exist:
+              value:
+                code: 'coupon_do_not_exist'
+                message: 'The coupon do not exist.'
+                data:
+                  status: 404
+
+    InternalError:
+      description: 'Internal Server Error.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+          examples:
+            coupon_could_not_be_created:
+              value:
+                code: 'coupon_could_not_be_created'
+                message: 'The coupon could not be created.'
+                data:
+                  status: 500
+            coupon_could_not_be_revoked:
+              value:
+                code: 'coupon_could_not_be_revoked'
+                message: 'The coupon could not be revoked.'
+                data:
+                  status: 500
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth2
+      description: 'A token will be provided to you when you register as a Jetpack partner.'
