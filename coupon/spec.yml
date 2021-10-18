@@ -2,7 +2,7 @@ openapi: 3.0.0
 
 info:
   title: 'Jetpack Partner - Coupon API'
-  description: 'A set of endpoints that allows Jetpack partners to create and manage coupons.'
+  description: 'A set of endpoints that allows Jetpack partners to issue and manage coupons.'
   version: 0.2.0
   contact:
     email: partners@jetpack.com
@@ -12,13 +12,13 @@ info:
 
 tags:
   - name: coupon
-    description: 'A set of endpoints that allows Jetpack partners to create and manage coupons.'
+    description: 'A set of endpoints that allows Jetpack partners to issue and manage coupons.'
   - name: presets
-    description: 'A set of endpoints that allows Jetpack partners interact with coupon presets.'
+    description: 'A set of endpoints that allows Jetpack partners to interact with coupon presets.'
 
 servers:
   - url: https://public-api.wordpress.com/wpcom/v2/jetpack-partner/coupon/v1
-    description: 'WordPress.com API'
+    description: 'Jetpack Partner API via WordPress.com'
 
 paths:
   /coupon:
@@ -67,7 +67,7 @@ paths:
               type: object
               properties:
                 preset:
-                  description: 'A coupon preset. These can be fetched with the /presets endpoint.'
+                  description: 'A coupon preset slug. These can be fetched with the /presets endpoint.'
                   type: string
                   example: 'preset1'
       security:
@@ -143,19 +143,18 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                description: 'A key/value pair of presets and its corresponding settings.'
-                properties:
-                  preset1:
-                    $ref: '#/components/schemas/Preset'
-                  preset2:
-                    $ref: '#/components/schemas/Preset'
+                type: array
+                description: 'A list of presets and their corresponding properties.'
+                items:
+                  $ref: '#/components/schemas/Preset'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/NoPartner'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalError'
 
 externalDocs:
   description: 'Learn more about integrating with this API.'
@@ -168,18 +167,21 @@ components:
       properties:
         coupon_code:
           $ref: '#/components/schemas/CouponCode'
+        products:
+          $ref: '#/components/schemas/Products'
         discount:
           $ref: '#/components/schemas/Discount'
-        expires:
+        expires_at:
           type: string
           format: date-time
-        used_on:
+        used_at:
           type: string
           format: date-time
+          nullable: true
 
     CouponCode:
       type: string
-      example: 'part_0.TG9yZW0gaXBzd'
+      example: 'partner_0.TG9yZW0gaXBzd'
 
     Products:
       type: array
@@ -198,7 +200,7 @@ components:
     Discount:
       type: number
       format: double
-      description: 'The percentage of discount the coupon offers'
+      description: 'The percentage of discount the coupon offers.'
       minimum: 1
       maximum: 100
       example: 50
@@ -206,6 +208,10 @@ components:
     Preset:
       type: object
       properties:
+        slug:
+          type: string
+          description: Unique coupon identifier.
+          example: 'preset1'
         products:
           $ref: '#/components/schemas/Products'
         discount:
@@ -299,8 +305,8 @@ components:
           examples:
             coupon_do_not_exist:
               value:
-                code: 'coupon_do_not_exist'
-                message: 'The coupon do not exist.'
+                code: 'coupon_does_not_exist'
+                message: 'The coupon does not exist.'
                 data:
                   status: 404
 
@@ -311,10 +317,10 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorMessage'
           examples:
-            coupon_could_not_be_created:
+            coupon_could_not_be_issued:
               value:
-                code: 'coupon_could_not_be_created'
-                message: 'The coupon could not be created.'
+                code: 'coupon_could_not_be_issued'
+                message: 'The coupon could not be issued.'
                 data:
                   status: 500
             coupon_could_not_be_revoked:
