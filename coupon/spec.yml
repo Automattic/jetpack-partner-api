@@ -158,7 +158,7 @@ paths:
 
 externalDocs:
   description: 'Learn more about integrating with this API.'
-  url: https://github.com/Automattic/<TBD>
+  url: https://github.com/Automattic/jetpack-partner-api
 
 components:
   schemas:
