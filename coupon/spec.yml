@@ -171,13 +171,12 @@ components:
           $ref: '#/components/schemas/Products'
         discount:
           $ref: '#/components/schemas/Discount'
-        expires_at:
-          type: string
-          format: date-time
         used_at:
           type: string
           format: date-time
           nullable: true
+        expired:
+          type: boolean
 
     CouponCode:
       type: string
