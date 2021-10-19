@@ -45,7 +45,7 @@ Once you've issued a coupon it can be immediately used for a Jetpack.com purchas
 
 ### 3. Get the status of a coupon
 
-To get the status of a coupon you have to maka a `GET` request to the `/wpcom/v2/jetpack-partner/coupon/v1/coupon` endpoint - you can find our [bash example here](./examples/get-coupon-status.sh).
+To get the status of a coupon you have to make a `GET` request to the `/wpcom/v2/jetpack-partner/coupon/v1/coupon` endpoint - you can find our [bash example here](./examples/get-coupon-status.sh).
 
 The response will be a JSON object of the coupon that looks something like this:
 ```json
@@ -61,7 +61,7 @@ The `used_at` value is either `null` signifying that the coupon us not used yet 
 
 ### 4. Revoke a coupon
 
-To revoke a coupon you have to maka a `DELETE` request to the `/wpcom/v2/jetpack-partner/coupon/v1/coupon` endpoint - you can find our [bash example here](./examples/revoke-coupon.sh).
+To revoke a coupon you have to make a `DELETE` request to the `/wpcom/v2/jetpack-partner/coupon/v1/coupon` endpoint - you can find our [bash example here](./examples/revoke-coupon.sh).
 
 The response will be a JSON object of the coupon that looks something like this:
 ```json
