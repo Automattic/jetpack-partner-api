@@ -67,7 +67,7 @@ paths:
               type: object
               properties:
                 preset:
-                  description: 'A coupon preset slug. These can be fetched with the /presets endpoint.'
+                  description: A coupon preset slug. See the Preset schema for more information.
                   type: string
                   example: 'preset1'
       security:
@@ -206,6 +206,11 @@ components:
       example: 50
 
     Preset:
+      description: >
+        A Preset determines the properties of coupons issued with it such as the discount amount
+        and products the coupon is usable for. Presets are predefined and provided by the Jetpack Infinity team.
+
+        All available presets can be fetched from the /presets endpoint.
       type: object
       properties:
         slug:
