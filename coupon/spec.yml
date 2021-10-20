@@ -12,9 +12,9 @@ info:
 
 tags:
   - name: coupon
-    description: 'A set of endpoints that allows Jetpack partners to issue and manage individual coupon.'
+    description: 'A set of endpoints that allows Jetpack partners to issue and manage coupons.'
   - name: coupons
-    description: 'A set of endpoints that allows Jetpack partners to issue and manage a collection of coupons.'
+    description: 'A set of endpoints that allows Jetpack partners to issue and manage coupons in bulk.'
   - name: presets
     description: 'A set of endpoints that allows Jetpack partners to interact with coupon presets.'
 
@@ -132,7 +132,7 @@ paths:
     post:
       tags:
         - coupons
-      summary: 'Issue a collection of new coupons.'
+      summary: 'Issue new coupons.'
       operationId: issueCoupons
       requestBody:
         content:
