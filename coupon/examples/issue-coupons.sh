@@ -6,6 +6,6 @@ COUPONS_JSON=$(curl "https://public-api.wordpress.com/wpcom/v2/jetpack-partner/c
   --silent \
   --header "Authorization: Bearer $ACCESS_TOKEN" \
   --header "Content-Type: application/json" \
-  --data "{\"preset\":\"$PRESET\",\"quantity\":\"$QUANTITY\"}" \
+  --data "{\"preset\":\"$PRESET\",\"quantity\":$QUANTITY}" \
   -X POST)
 echo $COUPONS_JSON
