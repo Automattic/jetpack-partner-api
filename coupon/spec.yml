@@ -225,6 +225,7 @@ components:
           nullable: true
         expired:
           type: boolean
+          example: false
 
     CouponCode:
       type: string
