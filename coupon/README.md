@@ -7,6 +7,7 @@ This documentation describes the Jetpack Partner Coupon API and how to get start
 - [Specification](#specification)
 - [Authentication](#authentication)
 - [Step-by-step integration guide](#step-by-step-integration-guide)
+- [Bulk operations](#bulk-operations)
 
 ## Specification
 
@@ -75,3 +76,33 @@ The response will be a JSON object of the coupon that looks something like this:
 ```
 
 After revoking a coupon, its `expired` value will be updated to `true`.
+
+## Bulk operations
+
+Some of the individual coupon operations also exists as bulk operations to reduce the amount of HTTP request required to manage coupons.
+
+### 1. Issue coupons
+
+To issue coupons in bulk you have to make a `POST` request to the `/wpcom/v2/jetpack-partner/coupon/v1/coupons` endpoint - you can find our [bash example here](./examples/issue-coupons.sh).
+
+The response will be a JSON array of the newly issued coupon that looks something like this:
+```json
+[
+  {
+    "coupon_code":"partner_0.TG9yZW0gaXBzd",
+    "products":["jetpack-backup-daily"],
+    "discount":100,
+    "used_at":null,
+    "expired":false
+  },
+  {
+    "coupon_code":"partner_0.Ac2kF3gV8oP2x",
+    "products":["jetpack-backup-daily"],
+    "discount":100,
+    "used_at":null,
+    "expired":false
+  }
+]
+```
+
+Once you've issued the coupons, they can be immediately used for a Jetpack.com purchase by any customer that has the coupon code.
