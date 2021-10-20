@@ -3,7 +3,7 @@ openapi: 3.0.0
 info:
   title: 'Jetpack Partner - Coupon API'
   description: 'A set of endpoints that allows Jetpack partners to issue and manage coupons.'
-  version: 0.2.0
+  version: 0.3.0
   contact:
     email: partners@jetpack.com
   license:
@@ -12,7 +12,9 @@ info:
 
 tags:
   - name: coupon
-    description: 'A set of endpoints that allows Jetpack partners to issue and manage coupons.'
+    description: 'A set of endpoints that allows Jetpack partners to issue and manage individual coupon.'
+  - name: coupons
+    description: 'A set of endpoints that allows Jetpack partners to issue and manage a collection of coupons.'
   - name: presets
     description: 'A set of endpoints that allows Jetpack partners to interact with coupon presets.'
 
@@ -123,6 +125,52 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /coupons:
+    post:
+      tags:
+        - coupons
+      summary: 'Issue a collection of new coupons.'
+      operationId: issueCoupons
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                preset:
+                  description: A coupon preset slug. See the Preset schema for more information.
+                  type: string
+                  example: 'preset1'
+                quantity:
+                  description: The amount of coupons that should be returned.
+                  type: integer
+                  format: int32
+                  minimum: 1
+                  maximum: 500
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: 'OK. Response body contains a list of newly issued coupons.'
+          headers:
+            X-Jetpack-Request-Id:
+              $ref: '#/components/headers/X-Jetpack-Request-Id'
+          content:
+            application/json:
+              schema:
+                type: array
+                description: 'A list of coupon objects.'
+                items:
+                  $ref: '#/components/schemas/Coupon'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NoPartner'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalError'
 
