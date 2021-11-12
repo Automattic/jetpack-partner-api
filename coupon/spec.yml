@@ -3,7 +3,7 @@ openapi: 3.0.0
 info:
   title: 'Jetpack Partner - Coupon API'
   description: 'A set of endpoints that allows Jetpack partners to issue and manage coupons.'
-  version: 0.3.0
+  version: 0.4.0
   contact:
     email: partners@jetpack.com
   license:
@@ -237,13 +237,13 @@ components:
       items:
         type: string
         enum:
-          - 'jetpack-backup-daily'
-          - 'jetpack-backup-realtime'
-          - 'jetpack-scan'
-          - 'jetpack-anti-spam'
-          - 'jetpack-security-daily'
-          - 'jetpack-security-realtime'
-          - 'jetpack-complete'
+          - 'jetpack_backup_daily'
+          - 'jetpack_backup_realtime'
+          - 'jetpack_scan'
+          - 'jetpack_anti_spam'
+          - 'jetpack_security_daily'
+          - 'jetpack_security_realtime'
+          - 'jetpack_complete'
 
     Discount:
       type: number
