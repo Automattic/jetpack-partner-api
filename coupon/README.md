@@ -127,8 +127,6 @@ _Note: this requires the [Jetpack plugin](https://wordpress.org/plugins/jetpack/
 
 Even though we recommend that you use the query parameter method above to directly lead your customer into a customized redeem flow, then it will still work if you add the coupon directly to the WordPress database with the CLI commands below because we have fallback logic that promts the user to redeemed coupons if the stopped halfway through the originally intended redeem flow.
 
-**CLI commands**
-
 * `wp jetpack options update partner_coupon <COUPON>`
   * You will be prompted to confirm that you wish to update Jetpack options. Answer `yes` here.
 * `wp jetpack options update partner_coupon_added <timestamp>`
