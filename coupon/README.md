@@ -8,6 +8,7 @@ This documentation describes the Jetpack Partner Coupon API and how to get start
 - [Authentication](#authentication)
 - [Step-by-step integration guide](#step-by-step-integration-guide)
 - [Bulk operations](#bulk-operations)
+- [Redeem coupon](#redeem-coupon)
 
 ## Specification
 
@@ -107,8 +108,7 @@ The response will be a JSON array of the newly issued coupon that looks somethin
 
 Once you've issued the coupons, they can be immediately used for a Jetpack.com purchase by any customer that has the coupon code.
 
-
-## Redeem coupons
+## Redeem coupon
 
 The coupon(s) can be redeemed in a few different ways.
 
