@@ -106,3 +106,50 @@ The response will be a JSON array of the newly issued coupon that looks somethin
 ```
 
 Once you've issued the coupons, they can be immediately used for a Jetpack.com purchase by any customer that has the coupon code.
+
+
+## Redeem coupons
+
+The coupon(s) can be redeemed in a few different ways.
+
+### Query parameter in WP Admin
+
+The [all in one Jetpack plugin](https://wordpress.org/plugins/jetpack/) actively looks for a `jetpack-partner-coupon` parameter on any WP Admin page (e.g. `/wp-admin/index.php?jetpack-partner-coupon=MY_COUPON_123`) which will:
+
+1. Redirect the customer into a "Redeem coupon flow" that co-brands your company together with Jetpack and informs them which product they've been granted a coupon for and, if they choose to redeem the cupon, will be redirect to a checkout page on Jetpack.com where the product and the coupon will be automatically applied.
+2. Store the coupon in database for the WordPress site for approximately a month, so we can help communicate to the end-customer that they have an unredeemed coupon.
+
+Using this method will allow you to e.g. have a SSO link from your own customer dashboard where you log in the customer and then redirect them to the redeem flow co-branding your company with Jetpack - and we'll take care of the rest.
+
+_Note: this requires the [Jetpack plugin](https://wordpress.org/plugins/jetpack/) to be installed and activated beforehand._
+
+### Add coupon to the database with WP CLI
+
+Even though we recommend that you use the query parameter method above to directly lead your customer into a customized redeem flow, then it will still work if you add the coupon directly to the WordPress database with the CLI commands below because we have fallback logic that promts the user to redeemed coupons if the stopped halfway through the originally intended redeem flow.
+
+**CLI commands**
+
+* `wp jetpack options update partner_coupon <COUPON>`
+  * You will be prompted to confirm that you wish to update Jetpack options. Answer `yes` here.
+* `wp jetpack options update partner_coupon_added <timestamp>`
+  * You will be prompted to confirm that you wish to update Jetpack options. Answer `yes` here.
+
+We use the `partner_coupon_added` option as a fallback check to purge the coupon after approximately a month to try and prevent continuesly prompting customers about coupons that might already have been claimed or doesn't work anymore because they have been revoked.
+
+_Note: Jetpack CLI commands requires the [Jetpack plugin](https://wordpress.org/plugins/jetpack/) to be installed and activated._
+
+### Link directly to Jetpack Checkout
+
+You can also use the following link to send customers directly to the Jetpack checkout with the product and coupon applied:
+
+* `https://jetpack.com/redirect/?source=jetpack-partner-coupon-checkout&path={product}&query=coupon%3D{coupon-code}`
+  * Remember to update the `{product}` argument with the specific product: `{product}` => `jetpack-backup-t1`.
+  * Remember to update the `{coupon-code}` argument with the coupon: `{coupon-code}` => `MY_COUPON_123`.
+
+This can be useful in e.g. email campaigns or if your support team wants to help the customer redeem the product because the website fails for any reason.
+
+### Manually applying the coupon on Jetpack.com
+
+Partner coupons works like a coupon we would issue ourselves, so they can be applied directly in the checkout on Jetpack.com.
+
+The main drawback about this solution is that the customer is left on their own to select the exact product on Jetpack.com that the coupon has been issued for.
