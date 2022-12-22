@@ -129,6 +129,43 @@ paths:
           $ref: '#/components/responses/InternalError'
 
   /coupons:
+    get:
+      tags:
+        - coupons
+      summary: 'Get the status of coupons in bulk.'
+      operationId: couponsStatus
+      parameters:
+        - name: coupon_codes
+          description: 'Unique coupon codes.'
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/CouponCode'
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: 'OK. Response body contains the requested coupon statuses.'
+          headers:
+            X-Jetpack-Request-Id:
+              $ref: '#/components/headers/X-Jetpack-Request-Id'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CouponStatus'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NoPartner'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  
     post:
       tags:
         - coupons
@@ -230,6 +267,19 @@ components:
     CouponCode:
       type: string
       example: 'partner_0.TG9yZW0gaXBzd'
+      
+    CouponStatus:
+      type: object
+      properties:
+        coupon_code:
+          $ref: '#/components/schemas/CouponCode'
+        result_type:
+          type: string
+          enum: ['coupon', 'error']
+        result:
+          oneOf:
+            - $ref: '#/components/schemas/Coupon'
+            - $ref: '#/components/schemas/ErrorMessage'
 
     Products:
       type: array
